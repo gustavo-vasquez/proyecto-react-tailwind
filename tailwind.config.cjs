@@ -4,10 +4,10 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: { // crea una clase bg- personalizada, sirve para reutilizarlos en distintos puntos de la app (y achicar la pila de clases)
-        'mobile-light': 'url("./src/assets/img/bg-mobile-light.jpg")',
-        'mobile-dark': 'url("./src/assets/img/bg-mobile-dark.jpg")',
-        'desktop-light': 'url("./src/assets/img/bg-desktop-light.jpg")',
-        'desktop-dark': 'url("./src/assets/img/bg-desktop-dark.jpg")'
+        'mobile-light': 'url("/img/bg-mobile-light.jpg")',
+        'mobile-dark': 'url("/img/bg-mobile-dark.jpg")',
+        'desktop-light': 'url("/img/bg-desktop-light.jpg")',
+        'desktop-dark': 'url("/img/bg-desktop-dark.jpg")'
       }
     },
   },
