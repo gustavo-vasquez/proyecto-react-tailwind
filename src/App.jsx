@@ -1,3 +1,4 @@
+import { DragDropContext } from "@hello-pangea/dnd";
 import { useEffect, useState } from "react";
 
 import Header from "./components/Header";
@@ -19,6 +20,14 @@ const dummyTodos = [
 ];
 
 const initialTodos = JSON.parse(localStorage.getItem('todos')) || dummyTodos;
+
+const reorderItems = (list, startIndex, endIndex) => { 
+    const reordenedList = [...list];
+    const [extractedItem] = reordenedList.splice(startIndex, 1);
+
+    reordenedList.splice(endIndex, 0, extractedItem);
+    return reordenedList;
+}; // se crea afuera para que no se vuelva a crear la función en cada renderizado (se pueden sacar también las demás funciones de App.jsx
 
 const App = () => {
     const [todos, setTodos] = useState(initialTodos);
@@ -75,6 +84,26 @@ const App = () => {
         setFilter(filter); // podría haber pasado directamente 'setFilter' como prop en <TodoFilter/>
     };
 
+    const handleDragEnd = (result) => {
+        const { source, destination } = result;
+
+        if(!destination) return;
+
+        if (
+            source.index === destination.index &&
+            source.droppableId === destination.droppableId
+        )
+            return; // se fija si el índice es el mismo en el MISMO contenedor (en el caso que lo mueva a otro <Droppable/> con el mismo índice)
+        
+        setTodos((prevTodos) =>
+            reorderItems(
+                prevTodos,
+                source.index,
+                destination.index
+            )
+        );
+    };
+
     return (
         <div className="bg-mobile-light dark:bg-mobile-dark bg-contain bg-no-repeat bg-gray-200 min-h-screen dark:bg-gray-900 transition-all duration-1000 md:bg-desktop-light md:dark:bg-desktop-dark">
             <Header />
@@ -82,11 +111,13 @@ const App = () => {
             <main className="container mx-auto mt-8 px-4 max-w-xl">
                 <TodoCreate handleCreateTodo={handleCreateTodo} />
 
-                <TodoList
-                    todos={filterTodos()}
-                    handleDeleteTodo={handleDeleteTodo}
-                    handleUpdateTodo={handleUpdateTodo}
-                />
+                <DragDropContext onDragEnd={handleDragEnd}>
+                    <TodoList
+                        todos={filterTodos()}
+                        handleDeleteTodo={handleDeleteTodo}
+                        handleUpdateTodo={handleUpdateTodo}
+                    />
+                </DragDropContext>
 
                 <TodoComputed
                     remainingTodos={remainingTodos}
